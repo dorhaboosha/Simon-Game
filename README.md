@@ -4,7 +4,7 @@ A classic Simon memory game built with **HTML, CSS, JavaScript, and jQuery**.
 Repeat the color + sound sequence — it gets longer every level.
 
 ## Live Demo
-- https://<your-username>.github.io/Simon-Game/
+- https://dorhaboosha.github.io/Simon-Game/
 
 ## Features
 - Random sequence generation (new step each level)
