@@ -1,54 +1,75 @@
 /**
- * Simon Game - A memory game where the player must repeat an increasingly
- * complex sequence of coloured buttons. Press any key to start.
+ * Simon Game — memory sequence game.
+ *
+ * Flow:
+ * 1. First keypress starts the run; `nextSequence()` adds a colour and plays it.
+ * 2. Player repeats the full pattern by clicking pads; each click is checked in order.
+ * 3. Correct full length → short pause, then `nextSequence()` extends the pattern.
+ * 4. Wrong click → wrong sound, game-over styling, state reset; any key starts a new run.
+ *
  * @requires jQuery
  */
 
-/** @type {string[]} Available button colours in the game */
+// ---------------------------------------------------------------------------
+// State (shared across handlers and helpers)
+// ---------------------------------------------------------------------------
+
+/** @type {string[]} Colours used for pads; indices match random 0–3 in `nextSequence`. */
 var buttonColours = ["red", "blue", "green", "yellow"];
 
-/** @type {string[]} The sequence the game generates for the player to repeat */
+/** @type {string[]} Full sequence the player must copy this round. */
 var gamePattern = [];
 
-/** @type {string[]} The sequence of colours the player has clicked */
+/** @type {string[]} Clicks so far in the current attempt (cleared each new level). */
 var userClickedPattern = [];
 
-/** @type {boolean} Whether the game has been started */
+/** @type {boolean} True after the first keypress until `startOver()` runs. */
 var started = false;
 
-/** @type {number} Current level (length of the sequence) */
+/** @type {number} How many steps in the pattern (increments each successful round). */
 var level = 0;
 
-$(document).keypress(function() {
+// ---------------------------------------------------------------------------
+// Input: keyboard (start / restart) and pad clicks
+// ---------------------------------------------------------------------------
+
+$(document).keypress(function () {
     if (!started) {
+        // Title updates again inside `nextSequence()` once `level` is bumped.
         $("#level-title").text("Level " + level);
         nextSequence();
         started = true;
     }
 });
 
-$(".btn").click(function() {
-
+$(".btn").click(function () {
     var userChosenColour = $(this).attr("id");
     userClickedPattern.push(userChosenColour);
 
     playSound(userChosenColour);
     animatePress(userChosenColour);
 
+    // Compare this click to the expected colour at the same step index.
     checkAnswer(userClickedPattern.length - 1);
 });
 
+// ---------------------------------------------------------------------------
+// Game logic
+// ---------------------------------------------------------------------------
+
 /**
- * Checks if the player's input matches the game pattern at the given index.
- * Advances to next level on success, triggers game over on wrong answer.
- * @param {number} currentLevel - Index of the last button the player clicked
+ * Verifies the latest click against `gamePattern` at `currentLevel`.
+ * On success: if the player has entered the whole pattern, schedule the next round.
+ * On failure: play error, flash game-over, reset so the next keypress starts fresh.
+ *
+ * @param {number} currentLevel - Index of the last clicked pad (0-based within this round).
  */
 function checkAnswer(currentLevel) {
-
     if (gamePattern[currentLevel] === userClickedPattern[currentLevel]) {
         console.log("success");
         if (userClickedPattern.length === gamePattern.length) {
-            setTimeout(function() {
+            // Full pattern matched — brief pause so the last sound finishes, then extend sequence.
+            setTimeout(function () {
                 nextSequence();
             }, 1000);
         }
@@ -56,7 +77,7 @@ function checkAnswer(currentLevel) {
         console.log("wrong");
         playSound("wrong");
         $("body").addClass("game-over");
-        setTimeout(function() {
+        setTimeout(function () {
             $("body").removeClass("game-over");
         }, 200);
         $("#level-title").text("Game Over, Press Any Key to Restart");
@@ -65,8 +86,8 @@ function checkAnswer(currentLevel) {
 }
 
 /**
- * Generates the next colour in the sequence, displays it with animation and sound,
- * and clears the user's input for the new round.
+ * New round: clear the player's partial input, increase level, append one random colour,
+ * show the new tail of the sequence (flash + sound), update the heading.
  */
 function nextSequence() {
     userClickedPattern = [];
@@ -79,20 +100,26 @@ function nextSequence() {
     playSound(randomChosenColour);
 }
 
+// ---------------------------------------------------------------------------
+// Feedback (visual + audio)
+// ---------------------------------------------------------------------------
+
 /**
- * Adds a brief visual "pressed" effect to the button.
- * @param {string} currentColour - The id of the button to animate
+ * Short highlight on the pad the user clicked.
+ *
+ * @param {string} currentColour - Button `id` (e.g. `"green"`).
  */
 function animatePress(currentColour) {
     $("#" + currentColour).addClass("pressed");
-    setTimeout(function() {
+    setTimeout(function () {
         $("#" + currentColour).removeClass("pressed");
     }, 100);
 }
 
 /**
- * Plays the sound file for the given colour or effect.
- * @param {string} name - Name of the sound file (without extension)
+ * Plays `sounds/<name>.mp3` (colour names or `"wrong"`).
+ *
+ * @param {string} name - Filename without extension.
  */
 function playSound(name) {
     var audio = new Audio("sounds/" + name + ".mp3");
@@ -100,7 +127,7 @@ function playSound(name) {
 }
 
 /**
- * Resets the game state so the player can restart.
+ * Clears progression so the next keypress behaves like a cold start.
  */
 function startOver() {
     level = 0;

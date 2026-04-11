@@ -1,21 +1,47 @@
+/*
+ * Simon Game — styles for index.html
+ *
+ * Classes referenced from markup / JS:
+ *   #level-title     — status text (updated in game.js)
+ *   .container, .row — 2×2 pad grid
+ *   .btn + colour    — each pad (#green, #red, etc. share .btn)
+ *   .pressed         — flash when the player clicks (game.js toggles briefly)
+ *   .game-over       — full-page flash on wrong answer (game.js toggles on <body>)
+ */
+
+/* -------------------------------------------------------------------------- */
+/* Page shell — dark background, centred content                             */
+/* -------------------------------------------------------------------------- */
+
 body {
   text-align: center;
   background-color: #011F3F;
 }
 
+/* -------------------------------------------------------------------------- */
+/* Heading — retro font from Google Fonts (linked in index.html)             */
+/* -------------------------------------------------------------------------- */
+
 #level-title {
   font-family: 'Press Start 2P', cursive;
   font-size: 3rem;
-  margin:  5%;
+  margin: 5%;
   color: #FEF2BF;
 }
+
+/* -------------------------------------------------------------------------- */
+/* Board layout — container centres the pad grid; rows group pairs of .btn   */
+/* -------------------------------------------------------------------------- */
 
 .container {
   display: block;
   width: 50%;
   margin: auto;
-
 }
+
+/* -------------------------------------------------------------------------- */
+/* Pads — large squares; border defines the “Simon” wedge look with radius   */
+/* -------------------------------------------------------------------------- */
 
 .btn {
   margin: 25px;
@@ -26,10 +52,18 @@ body {
   border-radius: 20%;
 }
 
+/* -------------------------------------------------------------------------- */
+/* Wrong-answer feedback — applied to body for a moment in game.js           */
+/* -------------------------------------------------------------------------- */
+
 .game-over {
   background-color: red;
   opacity: 0.8;
 }
+
+/* -------------------------------------------------------------------------- */
+/* Pad colours — ids in HTML (green, red, yellow, blue) use these classes   */
+/* -------------------------------------------------------------------------- */
 
 .red {
   background-color: red;
@@ -46,6 +80,10 @@ body {
 .yellow {
   background-color: yellow;
 }
+
+/* -------------------------------------------------------------------------- */
+/* Active state — visual echo of a pad press (see animatePress in game.js)   */
+/* -------------------------------------------------------------------------- */
 
 .pressed {
   box-shadow: 0 0 20px white;

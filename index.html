@@ -1,43 +1,45 @@
 <!DOCTYPE html>
+<!--
+  Simon Game — entry page
+  - Styles: styles.css (layout and colors for the four pads)
+  - Behavior: game.js (uses jQuery for input and sequence logic)
+  - Assets: simon_game.png (favicon)
+-->
 <html lang="en" dir="ltr">
 
 <head>
+  <!-- Site icon shown in browser tabs -->
   <link rel="icon" type="image/png" href="./simon_game.png" />
   <meta charset="utf-8">
   <title>Simon Game</title>
+  <!-- App appearance -->
   <link rel="stylesheet" href="styles.css">
+  <!-- Pixel-style font for the retro Simon look -->
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
 </head>
 
 <body>
+  <!-- Status line: start prompt, level, or game-over message (updated by game.js) -->
   <h1 id="level-title">Press A Key to Start</h1>
+
+  <!-- Four colored pads in a 2×2 grid; ids match the colors used in game logic -->
   <div class="container">
-    <div lass="row">
-
-      <div type="button" id="green" class="btn green">
-
-      </div>
-
-      <div type="button" id="red" class="btn red">
-
-      </div>
-    </div>
-
+    <!-- Top row: green (top-left), red (top-right) -->
     <div class="row">
-
-      <div type="button" id="yellow" class="btn yellow">
-
-      </div>
-      <div type="button" id="blue" class="btn blue">
-
-      </div>
-
+      <div type="button" id="green" class="btn green"></div>
+      <div type="button" id="red" class="btn red"></div>
     </div>
 
+    <!-- Bottom row: yellow (bottom-left), blue (bottom-right) -->
+    <div class="row">
+      <div type="button" id="yellow" class="btn yellow"></div>
+      <div type="button" id="blue" class="btn blue"></div>
+    </div>
   </div>
-  
+
+  <!-- jQuery first, then game logic -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="./game.js" charset="utf-8"></script>
+  <script src="./game.js" charset="utf-8"></script>
 </body>
 
 </html>
